@@ -136,6 +136,7 @@ namespace BasicEncryption
         {
             openFileDialog1.FileName = string.Empty;
             saveFileDialog1.FileName = string.Empty;
+            saveFileDialog1.Title = openFileDialog1.Title = "Initialization Vector File";
             if (currentMode == Modes.EncryptNew)
             {
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
@@ -151,6 +152,7 @@ namespace BasicEncryption
         {
             openFileDialog1.FileName = string.Empty;
             saveFileDialog1.FileName = string.Empty;
+            saveFileDialog1.Title = openFileDialog1.Title = "Key File";
             if (currentMode == Modes.EncryptNew)
             {
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
@@ -164,6 +166,7 @@ namespace BasicEncryption
 
         private void srcBrowse_Click(object sender, EventArgs e)
         {
+            openFileDialog1.Title = "Source File";
             openFileDialog1.FileName = string.Empty;
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -173,6 +176,7 @@ namespace BasicEncryption
 
         private void destBrowse_Click(object sender, EventArgs e)
         {
+            saveFileDialog1.Title = "Destination File";
             saveFileDialog1.FileName = string.Empty;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
