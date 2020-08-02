@@ -16,11 +16,16 @@ namespace BasicEncryption
 
         void EncryptNew()
         {
+            string input;
             using (Aes myAes = Aes.Create())
             {
-                string original = File.ReadAllText(srcFileBox.Text);
+                FileInfo fileInfo = new FileInfo(srcFileBox.Text);
+                if (!IsPlainText(fileInfo.Extension))
+                    input = Convert.ToBase64String(File.ReadAllBytes(srcFileBox.Text));
+                else
+                    input = File.ReadAllText(srcFileBox.Text);
                 // Encrypt the string to an array of bytes.
-                byte[] encrypted = EncryptStringToBytes_Aes(original, myAes.Key, myAes.IV);
+                byte[] encrypted = EncryptStringToBytes_Aes(input, myAes.Key, myAes.IV);
 
                 //Display the original data and the decrypted data.
                 File.WriteAllBytes(destFilePath.Text, encrypted);
@@ -32,16 +37,26 @@ namespace BasicEncryption
 
         private void EncryptExisting()
         {
-            string original = File.ReadAllText(srcFileBox.Text);
+            string input;
+            FileInfo fileInfo = new FileInfo(srcFileBox.Text);
+            if (!IsPlainText(fileInfo.Extension))
+                input = Convert.ToBase64String(File.ReadAllBytes(srcFileBox.Text));
+            else
+                input = File.ReadAllText(srcFileBox.Text);
             // Encrypt the string to an array of bytes.
-            byte[] encrypted = EncryptStringToBytes_Aes(original, File.ReadAllBytes(keyPathBox.Text), File.ReadAllBytes(ivPathBox.Text));
+            byte[] encrypted = EncryptStringToBytes_Aes(input, File.ReadAllBytes(keyPathBox.Text), File.ReadAllBytes(ivPathBox.Text));
             File.WriteAllBytes(destFilePath.Text, encrypted);
         }
 
         private void Decrypt()
         {
-            string plainTextResult = DecryptStringFromBytes_Aes(File.ReadAllBytes(srcFileBox.Text), File.ReadAllBytes(keyPathBox.Text), File.ReadAllBytes(ivPathBox.Text));
-            File.WriteAllText(destFilePath.Text, plainTextResult);
+            string result;
+            FileInfo fileInfo = new FileInfo(destFilePath.Text);
+            result = DecryptStringFromBytes_Aes(File.ReadAllBytes(srcFileBox.Text), File.ReadAllBytes(keyPathBox.Text), File.ReadAllBytes(ivPathBox.Text));
+            if (!IsPlainText(fileInfo.Extension))
+                File.WriteAllBytes(destFilePath.Text, Convert.FromBase64String(result));
+            else
+                File.WriteAllText(destFilePath.Text, result);
         }
 
         static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
@@ -187,6 +202,17 @@ namespace BasicEncryption
         }
 
         private bool CheckFields => !(ivPathBox.Text.Equals(string.Empty) || keyPathBox.Text.Equals(string.Empty) || srcFileBox.Text.Equals(string.Empty) || destFilePath.Text.Equals(string.Empty));
+
+        private bool IsPlainText(string ext)
+        {
+            string[] extensions = {".TXT",".CSV",".JSON",".YAML",".YML",".XML","HTM","HTML" };
+            foreach (string e in extensions)
+            {
+                if (ext.ToUpper().Equals(e))
+                    return true;
+            }
+            return false;
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
