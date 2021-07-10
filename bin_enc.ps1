@@ -1,4 +1,5 @@
-﻿sl $PSScriptRoot
+# Due to the immutability of "BasicParsing" in modern Powershell, the Invoke-WebRequest and RESTMethod cmdlets strip excess whitespace, including newlines. from the request body. 
+sl $PSScriptRoot
 Write-Host "Encrypt (1) Decrypt (2)"
 $choice = Read-Host
 if ($choice -eq 1)
